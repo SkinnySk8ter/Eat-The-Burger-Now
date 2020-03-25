@@ -1,22 +1,28 @@
-var mysql = require("mysql");
+const mysql = require("mysql");
+let connection;
 
-// Set up our connection information
-var connection = mysql.createConnection({
-  port: 3308, //may have to change back to 3306 or whatever your root port is
-  host: "localhost",
-  user: "root",
-  password: "Silent7even", //need to ask about how to go about this without giving my pw out to the world- process.env
-  database: "burgers_db"
-});
+if (process.env.JAWSDB_URL) {
+   connection = mysql.createConnection(process.env.JAWSDB_URL);
+} else {
+   connection = mysql.createConnection({
+      host: "localHost",
+      port: 3308,
+      user: "root",
+      password: "Silent7even",
+      database: "burgers_db"
+   });
+}
 
-// Connect to the database
+// database connection info
+
+// make connection to the database
+
 connection.connect(function(err) {
-  if (err) {
-    console.error("error connecting: " + err.stack);
-    return;
-  }
-  console.log("connected as id " + connection.threadId);
+   if (err) {
+      console.error("error connecting: " + err.stack);
+      return;
+   }
+   console.log("\nconnected as ID " + connection.threadId + "\n");
 });
 
-// Export connection
 module.exports = connection;
