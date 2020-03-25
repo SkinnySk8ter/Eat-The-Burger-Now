@@ -1,33 +1,86 @@
-var connection = require("./connection.js");
+// Connection to mysql
+const connection = require("../config/connection");
 
-var orm = {
-  selectall: function(whatToSelect, tableInput) {
-    var queryString = "SELECT ?? FROM ??";
-    connection.query(queryString, [whatToSelect, tableInput], function(err, result) {
-      if (err) throw err;
-      console.log(result);
-    });
-  },
+// in case I need to use question marks
+function printQuestionMarks(num) {
+   var arr = [];
+
+   for (var i = 0; i < num; i++) {
+      arr.push("?");
+   }
+
+   return arr.toString();
 }
-//   create: function(table, cols, vals, cb) {
-//     var queryString = "INSERT INTO " + table;
 
-//     queryString += " (";
-//     queryString += cols.toString();
-//     queryString += ") ";
-//     queryString += "VALUES (";
-//     queryString += printQuestionMarks(vals.length);
-//     queryString += ") ";
+// convert object key/value pairs to SQL syntax
+function objToSql(ob) {
+   var arr = [];
 
-//     console.log(queryString);
+   // loop through the keys and push the key/value as a string int arr
+   for (var key in ob) {
+      var value = ob[key];
+      // check to skip hidden properties
+      if (Object.hasOwnProperty.call(ob, key)) {
+     
+         if (typeof value === "string" && value.indexOf(" ") >= 0) {
+            value = "'" + value + "'";
+         }
+         arr.push(key + "=" + value);
+      }
+   }
 
-//     connection.query(queryString, vals, function(err, result) {
-//       if (err) {
-//         throw err;
-//       }
+   // translate array of strings to a single comma-separated string
+   return arr.toString();
+}
 
-//       cb(result);
-//     });
-//   },
+const orm = {
+   all: function(tableInput, callback) {
+      let queryString = "SELECT * FROM " + tableInput + ";";
+      connection.query(queryString, function(err, result) {
+         if (err) throw err;
+         callback(result);
+      });
+   },
+   create: function(table, cols, vals, callback) {
+      let queryString = "INSERT INTO " + table;
+
+      queryString += " (";
+      queryString += cols.toString();
+      queryString += ") VALUES (";
+      queryString += printQuestionMarks(vals.length);
+      queryString += ") ";
+
+      console.log(queryString);
+
+      connection.query(queryString, vals, function(err, result) {
+         if (err) throw err;
+         callback(result);
+      });
+   },
+   update: function(table, objColVals, condition, callback) {
+      let queryString = "UPDATE " + table;
+
+      queryString += " SET ";
+      queryString += objToSql(objColVals);
+      queryString += " WHERE ";
+      queryString += condition;
+
+      console.log(queryString);
+      connection.query(queryString, function(err, result) {
+         if (err) throw err;
+         callback(result);
+      });
+   },
+   delete: function(table, condition, callback) {
+      let queryString = "DELETE FROM " + table;
+      queryString += " WHERE ";
+      queryString += condition;
+
+      connection.query(queryString, function(err, result) {
+         if (err) throw err;
+         callback(result);
+      });
+   }
+};
 
 module.exports = orm;
