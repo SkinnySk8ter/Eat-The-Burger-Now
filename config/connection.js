@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
   port: 3308, //may have to change back to 3306 or whatever your root port is
   host: "localhost",
   user: "root",
-  password: "silent7even", //need to ask about how to go about this without giving my pw out to the world
+  password: "Silent7even", //need to ask about how to go about this without giving my pw out to the world- process.env
   database: "burgers_db"
 });
 
