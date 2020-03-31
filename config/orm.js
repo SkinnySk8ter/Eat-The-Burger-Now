@@ -1,16 +1,16 @@
 // Connection to mysql
 const connection = require("../config/connection");
 
-// in case I need to use question marks
-function printQuestionMarks(num) {
-   var arr = [];
+ 
+// function printQuestionMarks(num) {
+//    var arr = [];
 
-   for (var i = 0; i < num; i++) {
-      arr.push("?");
-   }
+//    for (var i = 0; i < num; i++) {
+//       arr.push("?");
+//    }
 
-   return arr.toString();
-}
+//    return arr.toString();
+// }
 
 // convert object key/value pairs to SQL syntax
 function objToSql(ob) {
@@ -34,53 +34,44 @@ function objToSql(ob) {
 }
 
 const orm = {
-   all: function(tableInput, callback) {
-      let queryString = "SELECT * FROM " + tableInput + ";";
-      connection.query(queryString, function(err, result) {
-         if (err) throw err;
-         callback(result);
-      });
-   },
-   create: function(table, cols, vals, callback) {
-      let queryString = "INSERT INTO " + table;
+    selectAll: function (cb) {
+        const queryString = "SELECT * FROM burgers;";
+        connection.query(queryString, function (err, result) {
+            if (err) {
+                throw err
+            }
+            cb(result);
+        })
+    },
+    insertOne: function (vals, cb) {
+        let queryString = "INSERT INTO burgers(burgername) VALUES (";
+        queryString += printQuestionMarks(vals.length);
+        queryString += ") ";
 
-      queryString += " (";
-      queryString += cols.toString();
-      queryString += ") VALUES (";
-      queryString += printQuestionMarks(vals.length);
-      queryString += ") ";
+        console.log(queryString);
 
-      console.log(queryString);
+        connection.query(queryString, vals, function (err, result) {
+            if (err) {
+                throw err;
+            }
 
-      connection.query(queryString, vals, function(err, result) {
-         if (err) throw err;
-         callback(result);
-      });
-   },
-   update: function(table, objColVals, condition, callback) {
-      let queryString = "UPDATE " + table;
+            cb(result);
+        });
+    },
+    updateOne: function (condition, cb) {
+        let queryString = "UPDATE burgers SET devoured = 1 WHERE ";
+        queryString += condition;
 
-      queryString += " SET ";
-      queryString += objToSql(objColVals);
-      queryString += " WHERE ";
-      queryString += condition;
+        console.log(queryString);
 
-      console.log(queryString);
-      connection.query(queryString, function(err, result) {
-         if (err) throw err;
-         callback(result);
-      });
-   },
-   delete: function(table, condition, callback) {
-      let queryString = "DELETE FROM " + table;
-      queryString += " WHERE ";
-      queryString += condition;
+        connection.query(queryString, function (err, result) {
+            if (err) {
+                throw err;
+            }
 
-      connection.query(queryString, function(err, result) {
-         if (err) throw err;
-         callback(result);
-      });
-   }
+            cb(result);
+        });
+    }
 };
 
 module.exports = orm;
