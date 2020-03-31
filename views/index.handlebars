@@ -1,20 +1,46 @@
-<h1>Burger Time!</h1>
+<div class="container">
+  <div class="row">
+    <div class="col title">
+      <h1>Eat Da Burga!</h1>
+      <img
+        src="https://food.fnr.sndimg.com/content/dam/images/food/fullset/2017/5/10/0/FNM_060117-Smashburger-Style-Burgers-Recipe_s4x3.jpg.rend.hgtvcom.616.462.suffix/1494459418304.jpeg"
+        alt="Sandwich">
+    </div>
+  </div>
+  <br />
 
-<h2>An American staple!</h2>
-
-<ul>
-  {{#each burger}}
-  {{/each}}
-</ul>
-
-
-<h2>add a burger</h2>
-<form class="create-form">
-
-  <div class="form-group">
-    <label for="ca">Sandwich Name:</label>
-    <input type="text" id="ca" name="name">
+  <div class="row make-sandwich">
+    <div class="col">
+      <h2>Make A Sandwich</h2>
+      <form class="create-form">
+        <div class="form-group">
+          <label for="sandwich">Sandwich Name:</label>
+          <input type="text" id="sandwichInput" name="name">
+          <button type="submit" class="addBtn">Add Sammich</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <button type="submit">Add burger</button>
-</form>
+  <div class="row sandwich-lists">
+    <div class="col-md-6">
+      <h2>Uneaten</h2>
+      {{#each burgers}}
+      {{#unless devoured}}
+      <p> {{burgername}}
+        <button data-id={{id}} class="eatBtn">Eat me!</button></p>
+      {{/unless}}
+      {{/each}}
+    </div>
+    <div class="col-md-6">
+      <h2>Eaten</h2>
+      {{#each burgers}}
+      {{#if devoured}}
+      <p>{{burgername}}</p>
+      {{/if}}
+      {{/each}}
+    </div>
+  </div>
+
+
+</div>
