@@ -3,10 +3,10 @@ var express = require("express");
 var router = express.Router();
 
 // Import the model (burgers.js) to use its database functions.
-var cat = require("../models/burgers.js");
+var burger = require("../models/burgers.js");
 
 router.get("/", (req, res) => {
-  burgers.selectAll((data) => {
+  burger.selectAll((data) => {
       const burgerObject = {
           burgers: data
       };
